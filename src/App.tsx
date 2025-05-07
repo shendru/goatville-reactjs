@@ -1,17 +1,13 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import NavBar from "./components/navbar/NavBar";
 import Aside from "./components/aside/Aside";
 import Dashboard from "./components/dashboard/Dashboard";
 
 function App() {
-  const [count, setCount] = useState(0);
-
+  
   return (
     <>
       <NavBar />
-      <div className="mt-[1rem] flex h-[calc(100%-6rem)] gap-[1rem]">
+      <div className="mt-[1rem] flex h-[calc(100%-6rem)]">
         <Aside />
         <Dashboard />
       </div>
