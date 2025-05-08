@@ -1,4 +1,4 @@
-import { Mars, Venus } from "lucide-react";
+import { Mars } from "lucide-react";
 import CuteGoat from "../../assets/cutegoat.jpg";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,8 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 function GoatClickable() {
   return (

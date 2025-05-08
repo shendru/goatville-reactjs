@@ -1,6 +1,3 @@
-import React from "react";
-import GoatTestImage from "../../assets/goat-test-img.jpg";
-import GoatMonitor from "./GoatMonitor";
 import { Monitor } from "lucide-react";
 import GoatLive from "../../assets/videos/goat-live.mp4";
 import GoatClickable from "./GoatClickable";

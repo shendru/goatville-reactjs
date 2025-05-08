@@ -1,4 +1,4 @@
-import { Slash, Monitor, Mars, Venus } from "lucide-react";
+import { Slash, Monitor } from "lucide-react";
 
 import {
   Breadcrumb,
@@ -8,15 +8,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import GoatLive from "../../assets/videos/goat-live.mp4";
 import GoatClickable from "./GoatClickable";
 
