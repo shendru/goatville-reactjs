@@ -29,18 +29,41 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 
+import { Tag, CircleDashed, CircleDollarSign, Mars, Venus } from 'lucide-react';
 import { IconDotsVertical } from "@tabler/icons-react";
+import { getGoats } from "@/app/dashboard/data";
+import { Goat, ResponseGetGoat } from "@/app/dashboard/Goat";
 
 export default function Table() {
   const [sex, setSex] = useState<string>("");
+  const [data, setData] = useState<ResponseGetGoat>();
+
+  const [openReservationDialog, setOpenReservationDialog] = useState(false);
 
   useEffect(() => {
-    console.log(sex);
-  }, [sex]);
+    const init = async () => {
+      const res = await getGoats();
+      setData(res);
+    };
+    if (data === undefined || data === null) {
+      init();
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   // Parse the Data Here
+  //   if (data && data.data) {
+  //     const finalData = Array.isArray(data.data) ? data.data : [data.data as Goat];
+
+  //     for (let i = 0; i < finalData.length; i++) {
+  //     console.log(finalData[i].rfid_tag);
+  //     }
+  //   }
+  // }, [data]);
 
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex justify-between mx-[4rem]">
         <div>Goat List</div>
         <Dialog>
           <DialogTrigger asChild>
@@ -219,7 +242,7 @@ export default function Table() {
           </DialogContent>
         </Dialog>
       </div>
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg mx-[4rem]">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -239,78 +262,93 @@ export default function Table() {
             </tr>
           </thead>
           <tbody>
-            {[
-              {
-                name: 'Apple MacBook Pro 17"',
-                color: "Silver",
-                category: "Laptop",
-                price: "$2999",
-              },
-              {
-                name: "Microsoft Surface Pro",
-                color: "White",
-                category: "Laptop PC",
-                price: "$1999",
-              },
-              {
-                name: "Magic Mouse 2",
-                color: "Black",
-                category: "Accessories",
-                price: "$99",
-              },
-              {
-                name: "Google Pixel Phone",
-                color: "Gray",
-                category: "Phone",
-                price: "$799",
-              },
-              {
-                name: "Apple Watch 5",
-                color: "Red",
-                category: "Wearables",
-                price: "$999",
-              },
-            ].map((product, index) => (
-              <tr
-                key={index}
-                className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
-              >
-                <th
-                  scope="row"
-                  className="px-6 py-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            {data?.data && Array.isArray(data.data) ? (
+              data.data.map((product: Goat, index: number) => (
+                <tr
+                  key={index}
+                  className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
                 >
-                  {product.name}
-                </th>
-                <td className="px-6 py-6">{product.color}</td>
-                <td className="px-6 py-6">{product.category}</td>
-                <td className="px-6 py-6">{product.price}</td>
-                <td className="px-6 py-6">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-                        size="icon"
-                      >
-                        <IconDotsVertical />
-                        <span className="sr-only">Open menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-32">
-                      <DropdownMenuItem>Edit</DropdownMenuItem>
-                      <DropdownMenuItem>Reservation</DropdownMenuItem>
-                      <DropdownMenuItem className="text-green-700">
-                        Sold
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem variant="destructive">
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </td>
+                  <th
+                    scope="row"
+                    className="px-6 py-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    {product.goat_id}
+                  </th>
+                  <td className="px-6 py-6 flex items-center gap-[0.5rem]">{(product.availability === "For Sale" ? <Tag className="text-stone-700" /> : product.availability === "Reserved" ? <CircleDashed className="bg-[#eab308] text-white rounded-full"/> : <CircleDollarSign className=" bg-green-600 text-white rounded-full"/>)}{product.availability}</td>
+                  <td className="px-6 py-6">{product.sex === "Male" ? <Mars className="text-[#34B0FF]" /> : <Venus className="text-[#F4C9A8]" />}</td>
+                  <td className="px-6 py-6">{product.breed}</td>
+                  <td className="px-6 py-6">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+                          size="icon"
+                        >
+                          <IconDotsVertical />
+                          <span className="sr-only">Open menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-32">
+                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setOpenReservationDialog(true)}>Reservation</DropdownMenuItem>
+                        <DropdownMenuItem className="text-green-700">
+                          Sold
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem variant="destructive">
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <Dialog open={openReservationDialog} onOpenChange={setOpenReservationDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Reserve Goat</DialogTitle>
+            <DialogDescription>
+              Fill in the details to reserve this goat.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="buyer" className="text-left font-bold">
+                Buyer's Name
+              </Label>
+              <Input
+                id="buyer"
+                value=""
+                defaultValue=""
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="contact" className="text-left font-bold">
+                Contact Number
+              </Label>
+              <Input
+                id="contact"
+                value=""
+                defaultValue=""
+                className="col-span-3"
+              />
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button className="cursor-pointer" type="submit">
+                  Reserve
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+        </DialogContent>
+      </Dialog>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5}>No data available</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

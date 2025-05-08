@@ -1,8 +1,24 @@
 import { Monitor } from "lucide-react";
 import GoatLive from "../../assets/videos/goat-live.mp4";
 import GoatClickable from "./GoatClickable";
+import { useState, useEffect } from 'react'
+import { getGoats } from "@/app/dashboard/data";
+import { Goat, ResponseGetGoat } from "@/app/dashboard/Goat";
 
 function Dashboard() {
+
+    const [data, setData] = useState<ResponseGetGoat>();
+  
+    useEffect(() => {
+      const init = async () => {
+        const res = await getGoats();
+        setData(res);
+      };
+      if (data === undefined || data === null) {
+        init();
+      }
+    }, []);
+
   return (
     <div className="flex-1 flex">
       <section className="w-[25%] bg-white shadow-2xl">
@@ -14,18 +30,12 @@ function Dashboard() {
             <p className="font-bold mb-3">Detected Goats:</p>
           </div>
           <div>
-            <GoatClickable />
-            <GoatClickable />
-            <GoatClickable />
-            <GoatClickable />
-            <GoatClickable />
-            <GoatClickable />
+            {Array.isArray(data?.data) && data.data.map((_data: Goat, index: number) => (
+              <GoatClickable {..._data} key={index} />
+            ))}
           </div>
         </div>
       </section>
-      {/* <div className="w-[75%] flex-row mx-auto">
-        <GoatMonitor />
-      </div> */}
       <section className="flex-1">
         <div className="mx-[2rem]">
           <div className="mt-[4rem] h-[2rem] gap-[0.5rem] flex items-center mb-[2rem]">
