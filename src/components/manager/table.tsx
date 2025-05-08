@@ -38,6 +38,8 @@ export default function Table() {
   const [sex, setSex] = useState<string>("");
   const [data, setData] = useState<ResponseGetGoat>();
 
+  const [openReservationDialog, setOpenReservationDialog] = useState(false);
+
   useEffect(() => {
     const init = async () => {
       const res = await getGoats();
@@ -289,7 +291,7 @@ export default function Table() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-32">
                         <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem>Reserved...</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setOpenReservationDialog(true)}>Reservation</DropdownMenuItem>
                         <DropdownMenuItem className="text-green-700">
                           Sold
                         </DropdownMenuItem>
@@ -299,6 +301,46 @@ export default function Table() {
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
+
+                    <Dialog open={openReservationDialog} onOpenChange={setOpenReservationDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Reserve Goat</DialogTitle>
+            <DialogDescription>
+              Fill in the details to reserve this goat.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="buyer" className="text-left font-bold">
+                Buyer's Name
+              </Label>
+              <Input
+                id="buyer"
+                value=""
+                defaultValue=""
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="contact" className="text-left font-bold">
+                Contact Number
+              </Label>
+              <Input
+                id="contact"
+                value=""
+                defaultValue=""
+                className="col-span-3"
+              />
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button className="cursor-pointer" type="submit">
+                  Reserve
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+        </DialogContent>
+      </Dialog>
                   </td>
                 </tr>
               ))
