@@ -23,9 +23,6 @@ function Dashboard() {
           </div>
         </div>
       </section>
-      {/* <div className="w-[75%] flex-row mx-auto">
-        <GoatMonitor />
-      </div> */}
       <section className="flex-1">
         <div className="mx-[2rem]">
           <div className="mt-[4rem] h-[2rem] gap-[0.5rem] flex items-center mb-[2rem]">

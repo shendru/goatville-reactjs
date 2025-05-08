@@ -30,13 +30,33 @@ import {
 } from "@/components/ui/dialog";
 
 import { IconDotsVertical } from "@tabler/icons-react";
+import { getGoats } from "@/app/dashboard/data";
+import { Goat, ResponseGetGoat } from "@/app/dashboard/Goat";
 
 export default function Table() {
   const [sex, setSex] = useState<string>("");
+  const [data, setData] = useState<ResponseGetGoat>();
 
   useEffect(() => {
-    console.log(sex);
-  }, [sex]);
+    const init = async () => {
+      const res = await getGoats();
+      setData(res);
+    };
+    if (data === undefined || data === null) {
+      init();
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   // Parse the Data Here
+  //   if (data && data.data) {
+  //     const finalData = Array.isArray(data.data) ? data.data : [data.data as Goat];
+
+  //     for (let i = 0; i < finalData.length; i++) {
+  //     console.log(finalData[i].rfid_tag);
+  //     }
+  //   }
+  // }, [data]);
 
   return (
     <>
@@ -239,78 +259,53 @@ export default function Table() {
             </tr>
           </thead>
           <tbody>
-            {[
-              {
-                name: 'Apple MacBook Pro 17"',
-                color: "Silver",
-                category: "Laptop",
-                price: "$2999",
-              },
-              {
-                name: "Microsoft Surface Pro",
-                color: "White",
-                category: "Laptop PC",
-                price: "$1999",
-              },
-              {
-                name: "Magic Mouse 2",
-                color: "Black",
-                category: "Accessories",
-                price: "$99",
-              },
-              {
-                name: "Google Pixel Phone",
-                color: "Gray",
-                category: "Phone",
-                price: "$799",
-              },
-              {
-                name: "Apple Watch 5",
-                color: "Red",
-                category: "Wearables",
-                price: "$999",
-              },
-            ].map((product, index) => (
-              <tr
-                key={index}
-                className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
-              >
-                <th
-                  scope="row"
-                  className="px-6 py-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            {data?.data && Array.isArray(data.data) ? (
+              data.data.map((product: Goat, index: number) => (
+                <tr
+                  key={index}
+                  className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200"
                 >
-                  {product.name}
-                </th>
-                <td className="px-6 py-6">{product.color}</td>
-                <td className="px-6 py-6">{product.category}</td>
-                <td className="px-6 py-6">{product.price}</td>
-                <td className="px-6 py-6">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-                        size="icon"
-                      >
-                        <IconDotsVertical />
-                        <span className="sr-only">Open menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-32">
-                      <DropdownMenuItem>Edit</DropdownMenuItem>
-                      <DropdownMenuItem>Reservation</DropdownMenuItem>
-                      <DropdownMenuItem className="text-green-700">
-                        Sold
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem variant="destructive">
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </td>
+                  <th
+                    scope="row"
+                    className="px-6 py-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    {product.goat_id}
+                  </th>
+                  <td className="px-6 py-6">{product.availability}</td>
+                  <td className="px-6 py-6">{product.sex}</td>
+                  <td className="px-6 py-6">{product.breed}</td>
+                  <td className="px-6 py-6">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+                          size="icon"
+                        >
+                          <IconDotsVertical />
+                          <span className="sr-only">Open menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-32">
+                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                        <DropdownMenuItem>Reserved...</DropdownMenuItem>
+                        <DropdownMenuItem className="text-green-700">
+                          Sold
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem variant="destructive">
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5}>No data available</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
