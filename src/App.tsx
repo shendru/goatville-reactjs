@@ -1,13 +1,17 @@
-import NavBar from "./components/navbar/NavBar";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Aside from "./components/aside/Aside";
 import Dashboard from "./components/dashboard/Dashboard";
+import Manager from "./components/manager/Manager";
 
 function App() {
   return (
     <>
       <div className="flex h-full">
         <Aside />
-        <Dashboard />
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/manager" element={<Manager />} />
+        </Routes>
       </div>
       {/* <NavBar />
       <div className="mt-[1rem] flex h-[calc(100%-6rem)]">
