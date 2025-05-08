@@ -5,11 +5,15 @@ import Dashboard from "./components/dashboard/Dashboard";
 function App() {
   return (
     <>
-      <NavBar />
-      <div className="mt-[1rem] flex h-[calc(100%-6rem)]">
+      <div className="flex h-full">
         <Aside />
         <Dashboard />
       </div>
+      {/* <NavBar />
+      <div className="mt-[1rem] flex h-[calc(100%-6rem)]">
+        <Aside />
+        <Dashboard />
+      </div> */}
       {/* <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
