@@ -29,6 +29,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 
+import { Tag, CircleDashed, CircleDollarSign, Mars, Venus } from 'lucide-react';
 import { IconDotsVertical } from "@tabler/icons-react";
 import { getGoats } from "@/app/dashboard/data";
 import { Goat, ResponseGetGoat } from "@/app/dashboard/Goat";
@@ -60,7 +61,7 @@ export default function Table() {
 
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex justify-between mx-[4rem]">
         <div>Goat List</div>
         <Dialog>
           <DialogTrigger asChild>
@@ -239,7 +240,7 @@ export default function Table() {
           </DialogContent>
         </Dialog>
       </div>
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg mx-[4rem]">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -271,8 +272,8 @@ export default function Table() {
                   >
                     {product.goat_id}
                   </th>
-                  <td className="px-6 py-6">{product.availability}</td>
-                  <td className="px-6 py-6">{product.sex}</td>
+                  <td className="px-6 py-6 flex items-center gap-[0.5rem]">{(product.availability === "For Sale" ? <Tag className="text-stone-700" /> : product.availability === "Reserved" ? <CircleDashed className="bg-[#eab308] text-white rounded-full"/> : <CircleDollarSign className=" bg-green-600 text-white rounded-full"/>)}{product.availability}</td>
+                  <td className="px-6 py-6">{product.sex === "Male" ? <Mars className="text-[#34B0FF]" /> : <Venus className="text-[#F4C9A8]" />}</td>
                   <td className="px-6 py-6">{product.breed}</td>
                   <td className="px-6 py-6">
                     <DropdownMenu>

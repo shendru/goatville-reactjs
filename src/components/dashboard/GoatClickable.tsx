@@ -1,4 +1,5 @@
-import { Mars } from "lucide-react";
+import { useEffect } from "react";
+import { Mars, Venus } from "lucide-react";
 import CuteGoat from "../../assets/cutegoat.jpg";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,8 +11,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Goat } from "@/app/dashboard/Goat";
 
-function GoatClickable() {
+function GoatClickable(props : Goat) {
+  useEffect(() => {
+    
+    console.log(props);
+
+  },[]);
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -22,7 +30,7 @@ function GoatClickable() {
               src={CuteGoat}
               alt=""
             />
-            <p>G0001</p>
+            <p>{props.goat_id}</p>
           </div>
           <div className="flex items-center gap-1">
             <div className="w-[1rem] h-[1rem] border-1 border-black/10 rounded-full bg-amber-200"></div>
@@ -30,14 +38,15 @@ function GoatClickable() {
             <div className="w-[1rem] h-[1rem] border-1 border-black/40 rounded-full bg-white"></div>
           </div>
           <div className="flex justify-end items-center">
-            <Mars className="text-[#34B0FF]" />
+            {props.sex === "Male" ? <Mars className="text-[#34B0FF]" /> : <Venus className="text-[#F4C9A8]" />}
+            
           </div>
-          <p className="text-end self-center ">Hybrid</p>
+          <p className="text-end self-center ">{props.breed}</p>
         </section>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>G_001</DialogTitle>
+          <DialogTitle>ID: {props.goat_id}</DialogTitle>
         </DialogHeader>
         <div>
           <img src={CuteGoat} alt="" />

@@ -8,7 +8,7 @@ export interface Goat {
     color: string;
     horn_status: string;
     price: number;
-    availability: boolean;
+    availability: string;
     isPregnant: boolean;
 }
 
