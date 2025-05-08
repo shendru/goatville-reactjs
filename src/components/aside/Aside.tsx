@@ -5,13 +5,6 @@ import {
   LogOut,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import {
-  LayoutDashboard,
-  Computer,
-  SlidersHorizontal,
-  LogOut,
-} from "lucide-react";
-import { Link } from "react-router-dom";
 
 function Aside() {
   return (
