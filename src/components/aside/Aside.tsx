@@ -1,7 +1,7 @@
 import {
   LayoutDashboard,
   Computer,
-  SlidersHorizontal,
+  // SlidersHorizontal,
   LogOut,
 } from "lucide-react";
 import { Link } from "react-router-dom";

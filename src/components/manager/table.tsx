@@ -44,7 +44,6 @@ export default function Table() {
   const [data, setData] = useState<ResponseGetGoat>();
 
   const [openReservationDialog, setOpenReservationDialog] = useState(false);
-  const [openEditDialog, setOpenEditDialog] = useState(false);
 
   const [formData, setFormData] = useState<Goat>({
     goat_id: 0,
