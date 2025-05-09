@@ -29,26 +29,47 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 
-import { Tag, CircleDashed, CircleDollarSign, Mars, Venus } from 'lucide-react';
+import { Tag, CircleDashed, CircleDollarSign, Mars, Venus } from "lucide-react";
 import { IconDotsVertical } from "@tabler/icons-react";
-import { getGoats } from "@/app/dashboard/data";
+import {
+  addNewGoats,
+  deleteGoat,
+  getGoats,
+  updateGoat,
+} from "@/app/dashboard/data";
 import { Goat, ResponseGetGoat } from "@/app/dashboard/Goat";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Table() {
-  const [sex, setSex] = useState<string>("");
   const [data, setData] = useState<ResponseGetGoat>();
 
   const [openReservationDialog, setOpenReservationDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+
+  const [formData, setFormData] = useState<Goat>({
+    goat_id: 0,
+    rfid_tag: "",
+    breed: "",
+    sex: "",
+    age: 0,
+    weight: 0,
+    color: "",
+    horn_status: "",
+    price: 0,
+    availability: "",
+    isPregnant: false,
+  });
+
+  const init = async () => {
+    const res = await getGoats();
+    setData(res);
+  };
 
   useEffect(() => {
-    const init = async () => {
-      const res = await getGoats();
-      setData(res);
-    };
     if (data === undefined || data === null) {
       init();
     }
-  }, []);
+  }, [data]);
 
   // useEffect(() => {
   //   // Parse the Data Here
@@ -64,7 +85,10 @@ export default function Table() {
   return (
     <>
       <div className="flex justify-between mx-[4rem]">
-        <div>Goat List</div>
+        {/* <TabsList className="@4xl/main:flex hidden">
+          <TabsTrigger value="outline">Goats</TabsTrigger>
+        </TabsList> */}
+        {/* <div>Goat List</div> */}
         <Dialog>
           <DialogTrigger asChild>
             <Button className="cursor-pointer" variant="outline">
@@ -81,22 +105,30 @@ export default function Table() {
               </DialogDescription>
             </DialogHeader>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
+              <Label htmlFor="rfid" className="text-right">
                 RFID
               </Label>
               <Input
                 id="rfid"
-                value=""
                 defaultValue=""
                 className="col-span-3"
+                value={formData.rfid_tag}
+                onChange={(e) =>
+                  setFormData({ ...formData, rfid_tag: e.target.value })
+                }
               />
             </div>
             <div className="grid py-2">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
+                <Label htmlFor="availability" className="text-right">
                   Availability
                 </Label>
-                <Select>
+                <Select
+                  value={formData.availability}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, availability: value })
+                  }
+                >
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Select Availability" />
                   </SelectTrigger>
@@ -111,38 +143,50 @@ export default function Table() {
               </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
-              </Label>
-              <Input
-                id="name"
-                value=""
-                defaultValue=""
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="username" className="text-right">
+              <Label htmlFor="breed" className="text-right">
                 Breed
               </Label>
-              <Select>
+              <Select
+                value={formData.breed}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, breed: value })
+                }
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select Breed" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="Breed 1">Breed 1</SelectItem>
-                    <SelectItem value="Breed 2">Breed 2</SelectItem>
-                    <SelectItem value="Breed 3">Breed 3</SelectItem>
+                    <SelectItem value="Anglo-Nubian">Anglo-Nubian</SelectItem>
+                    <SelectItem value="Boer">Boer</SelectItem>
+                    <SelectItem value="Saanen">Saanen</SelectItem>
+                    <SelectItem value="Toggenburg">Toggenburg</SelectItem>
+                    <SelectItem value="Alpine">Alpine</SelectItem>
+                    <SelectItem value="LaMancha">LaMancha</SelectItem>
+                    <SelectItem value="Kiko">Kiko</SelectItem>
+                    <SelectItem value="Angora">Angora</SelectItem>
+                    <SelectItem value="Oberhasli">Oberhasli</SelectItem>
+                    <SelectItem value="Nigerian Dwarf">
+                      Nigerian Dwarf
+                    </SelectItem>
+                    <SelectItem value="Pygmy">Pygmy</SelectItem>
+                    <SelectItem value="Jamnapari">Jamnapari</SelectItem>
+                    <SelectItem value="Barbari">Barbari</SelectItem>
+                    <SelectItem value="Native">Native</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="username" className="text-right">
+              <Label htmlFor="sex" className="text-right">
                 Sex
               </Label>
-              <Select value={sex} onValueChange={setSex}>
+              <Select
+                value={formData.sex}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, sex: value })
+                }
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select Sex" />
                 </SelectTrigger>
@@ -154,87 +198,130 @@ export default function Table() {
                 </SelectContent>
               </Select>
             </div>
-            {sex === "Female" && (
+            {formData.sex === "Female" && (
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
+                <Label htmlFor="pregnant" className="text-right">
                   Pregnant?
                 </Label>
-                <Select>
+                <Select
+                  value={formData.isPregnant ? "true" : "false"}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, isPregnant: value === "true" })
+                  }
+                >
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem value="Section 1">Yes</SelectItem>
-                      <SelectItem value="Section 2">No</SelectItem>
+                      <SelectItem value="true">Yes</SelectItem>
+                      <SelectItem value="false">No</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
               </div>
             )}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Age
+              <Label htmlFor="age" className="text-right">
+                Age / month
               </Label>
               <Input
                 id="age"
-                value="0"
-                defaultValue=""
+                type="number"
                 className="col-span-3"
+                value={formData.age}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    age: parseInt(e.target.value) || 0,
+                  })
+                }
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Weight
+              <Label htmlFor="weight" className="text-right">
+                Weight / kg
               </Label>
               <Input
                 id="weight"
-                value=""
-                defaultValue=""
+                type="number"
                 className="col-span-3"
+                value={formData.weight}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    weight: parseInt(e.target.value) || 0,
+                  })
+                }
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
+              <Label htmlFor="color" className="text-right">
                 Color
               </Label>
               <Input
                 id="color"
-                value=""
-                defaultValue=""
+                defaultValue="Describe Color"
                 className="col-span-3"
+                value={formData.color}
+                onChange={(e) =>
+                  setFormData({ ...formData, color: e.target.value })
+                }
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="username" className="text-right">
+              <Label htmlFor="horn" className="text-right">
                 Horn Status
               </Label>
-              <Select>
+              <Select
+                value={formData.horn_status}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, horn_status: value })
+                }
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select Horn Status" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="Section 1">Horned</SelectItem>
-                    <SelectItem value="Section 2">Polled</SelectItem>
+                    <SelectItem value="HORNED">HORNED</SelectItem>
+                    <SelectItem value="POLLED">POLLED</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
+              <Label htmlFor="price" className="text-right">
                 Price
               </Label>
               <Input
                 id="price"
-                value=""
-                defaultValue=""
+                type="number"
                 className="col-span-3"
+                value={formData.price}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    price: parseInt(e.target.value) || 0,
+                  })
+                }
               />
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button className="cursor-pointer" type="submit">
+                <Button
+                  className="cursor-pointer"
+                  type="submit"
+                  onClick={() => {
+                    const createGoatData = async () => {
+                      const res = await addNewGoats(formData);
+                      setData(res);
+                      init();
+                    };
+
+                    createGoatData();
+                  }}
+                >
                   Save changes
                 </Button>
               </DialogClose>
@@ -274,10 +361,25 @@ export default function Table() {
                   >
                     {product.goat_id}
                   </th>
-                  <td className="px-6 py-6 flex items-center gap-[0.5rem]">{(product.availability === "For Sale" ? <Tag className="text-stone-700" /> : product.availability === "Reserved" ? <CircleDashed className="bg-[#eab308] text-white rounded-full"/> : <CircleDollarSign className=" bg-green-600 text-white rounded-full"/>)}{product.availability}</td>
-                  <td className="px-6 py-6">{product.sex === "Male" ? <Mars className="text-[#34B0FF]" /> : <Venus className="text-[#F4C9A8]" />}</td>
-                  <td className="px-6 py-6">{product.breed}</td>
+                  <td className="px-6 py-6 flex items-center gap-[0.5rem]">
+                    {product.availability === "For Sale" ? (
+                      <Tag className="text-stone-700" />
+                    ) : product.availability === "Reserved" ? (
+                      <CircleDashed className="bg-[#eab308] text-white rounded-full" />
+                    ) : (
+                      <CircleDollarSign className=" bg-green-600 text-white rounded-full" />
+                    )}
+                    {product.availability}
+                  </td>
                   <td className="px-6 py-6">
+                    {product.sex === "Male" ? (
+                      <Mars className="text-[#34B0FF]" />
+                    ) : (
+                      <Venus className="text-[#F4C9A8]" />
+                    )}
+                  </td>
+                  <td className="px-6 py-6">{product.breed}</td>
+                  <td className="px-6 py-6 flex justify-end">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -290,63 +392,118 @@ export default function Table() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-32">
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setOpenReservationDialog(true)}>Reservation</DropdownMenuItem>
-                        <DropdownMenuItem className="text-green-700">
-                          Sold
+                        {/* <DropdownMenuItem
+                          onClick={() => {
+                            setOpenEditDialog(true);
+                          }}
+                        >
+                          Edit
+                        </DropdownMenuItem> */}
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setOpenReservationDialog(true);
+                          }}
+                        >
+                          Reservation
                         </DropdownMenuItem>
+                        {product.availability !== "Sold" && (
+                          <DropdownMenuItem
+                            className="text-green-700"
+                            onClick={() => {
+                              const upG = async () => {
+                                console.log(product);
+                                let tempPro: any = product;
+                                tempPro.availability = "Sold";
+                                tempPro.price = parseInt(tempPro.price) || 0;
+                                tempPro.isPregnant = false;
+                                const res = await updateGoat(
+                                  product.goat_id,
+                                  tempPro
+                                );
+                                setData(res);
+                                init();
+                              };
+
+                              upG();
+                            }}
+                          >
+                            Sold
+                          </DropdownMenuItem>
+                        )}
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem variant="destructive">
+                        <DropdownMenuItem
+                          variant="destructive"
+                          onClick={() => {
+                            const deleteG = async () => {
+                              const res = await deleteGoat(product.goat_id);
+                              setData(res);
+                              init();
+                            };
+
+                            deleteG();
+                          }}
+                        >
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
 
-                    <Dialog open={openReservationDialog} onOpenChange={setOpenReservationDialog}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Reserve Goat</DialogTitle>
-            <DialogDescription>
-              Fill in the details to reserve this goat.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="buyer" className="text-left font-bold">
-                Buyer's Name
-              </Label>
-              <Input
-                id="buyer"
-                value=""
-                defaultValue=""
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="contact" className="text-left font-bold">
-                Contact Number
-              </Label>
-              <Input
-                id="contact"
-                value=""
-                defaultValue=""
-                className="col-span-3"
-              />
-            </div>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button className="cursor-pointer" type="submit">
-                  Reserve
-                </Button>
-              </DialogClose>
-            </DialogFooter>
-        </DialogContent>
-      </Dialog>
+                    <Dialog
+                      open={openReservationDialog}
+                      onOpenChange={setOpenReservationDialog}
+                    >
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>Reserve Goat</DialogTitle>
+                          {product.availability !== "Reserved" && (
+                            <DialogDescription>
+                              Fill in the details to reserve this goat.
+                            </DialogDescription>
+                          )}
+                        </DialogHeader>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label
+                            htmlFor="buyer"
+                            className="text-left font-bold"
+                          >
+                            Buyer's Name
+                          </Label>
+                          <Input
+                            id="buyer"
+                            defaultValue=""
+                            className="col-span-3"
+                          />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label
+                            htmlFor="contact"
+                            className="text-left font-bold"
+                          >
+                            Contact Number
+                          </Label>
+                          <Input
+                            id="contact"
+                            defaultValue=""
+                            className="col-span-3"
+                          />
+                        </div>
+                        <DialogFooter>
+                          <DialogClose asChild>
+                            <Button className="cursor-pointer" type="submit">
+                              Reserve
+                            </Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={5}>No data available</td>
+                <td colSpan={5}>
+                  <Skeleton className="py-8 bg-black/10 rounded-md" />
+                </td>
               </tr>
             )}
           </tbody>
