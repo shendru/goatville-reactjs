@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { Tag, CircleDashed, CircleDollarSign, Mars, Venus } from "lucide-react";
-import { IconDotsVertical } from "@tabler/icons-react";
+// import { IconDotsVertical } from "@tabler/icons-react";
 import {
   addNewGoats,
   deleteGoat,
@@ -386,7 +386,7 @@ export default function Table() {
                           className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
                           size="icon"
                         >
-                          <IconDotsVertical />
+                          {/* <IconDotsVertical /> */} Hehe
                           <span className="sr-only">Open menu</span>
                         </Button>
                       </DropdownMenuTrigger>
