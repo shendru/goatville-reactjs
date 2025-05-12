@@ -42,11 +42,19 @@ function Dashboard() {
       </section>
       <section className="flex-1">
         <div className="mx-[2rem]">
-          <div className="mt-[4rem] h-[2rem] gap-[0.5rem] flex items-center mb-[2rem]">
-            <Monitor />
-            <p className="font-bold text-2xl">Real-Time Goat Monitoring</p>
+          <div className="mt-[4rem] h-[3.5rem] gap-[0.5rem] flex items-center mb-[2rem] bg-white shadow-md rounded-[0.2rem] border-1 border-black/5">
+            <div className="flex h-full items-center">
+              <div className="bg-[#B68D5F] h-full w-[3.5rem] flex items-center justify-center text-white">
+                <Monitor className="w-full" />
+              </div>
+              <div className="flex items-center">
+                <p className="ml-[1rem] text-xl h-full">
+                  Real-Time Goat Monitoring
+                </p>
+              </div>
+            </div>
           </div>
-          <div className="relative w-full overflow-hidden rounded-lg">
+          <div className="relative w-full overflow-hidden rounded-[0.2rem]">
             <video autoPlay loop muted>
               <source src={GoatLive} type="video/mp4" />
             </video>
